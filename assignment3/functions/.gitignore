@@ -2,7 +2,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/node
 # Edit at https://www.toptal.com/developers/gitignore?templates=node
 
-# firebase service account
 wesopt29-4788e-firebase-adminsdk-g7j7y-dc26ea8218.json
 
 ### Node ###
