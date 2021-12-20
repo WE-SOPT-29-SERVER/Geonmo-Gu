@@ -7,7 +7,7 @@ const db = require('../../../db/db');
 const jwtHandlers = require('../../../lib/jwtHandlers');
 const { signInWithEmailAndPassword } = require('@firebase/auth');
 const { firebaseAuth } = require('../../../config/firebaseClient');
-const { userDB } = require('../../../db');
+const { userDB, tokenDB } = require('../../../db');
 
 module.exports = async (req, res) => {
   const { email, password } = req.body;
@@ -45,7 +45,12 @@ module.exports = async (req, res) => {
     const user = await userDB.getUserByIdFirebase(client, idFirebase);
 
     const { accesstoken } = jwtHandlers.sign(user);
-    res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.LOGIN_SUCCESS, { user, accesstoken }));
+    const { refreshtoken } = jwtHandlers.refresh(user);
+    console.log(jwtHandlers.refreshtoken);
+    const userId = user.id;
+    const token = await tokenDB.AddRefreshtoken(client, userId, refreshtoken);
+
+    res.status(statusCode.OK).send(util.success(statusCode.OK, responseMessage.LOGIN_SUCCESS, { user, accesstoken, refreshtoken }));
   } catch (error) {
     functions.logger.error(`[ERROR] [${req.method.toUpperCase()}] ${req.originalUrl}`, `[CONTENT] ${error}`);
     console.log(error);

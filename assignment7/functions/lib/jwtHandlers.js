@@ -4,9 +4,10 @@ const { TOKEN_INVALID, TOKEN_EXPIRED } = require('../constants/jwt');
 
 // JWT를 발급/인증할 떄 필요한 secretKey를 설정합니다. 값은 .env로부터 불러옵니다.
 const secretKey = process.env.JWT_SECRET;
+const refreshSecretKey = process.env.JWT_REFRESH_SECRET;
 const options = {
   algorithm: 'HS256',
-  expiresIn: '30d',
+  expiresIn: '1m',
   issuer: 'wesopt',
 };
 
@@ -21,6 +22,21 @@ const sign = (user) => {
 
   const result = {
     accesstoken: jwt.sign(payload, secretKey, options),
+  };
+  return result;
+};
+
+const refresh = (user) => {
+  const payload = {
+    id: user.id,
+  };
+  const refreshOption = {
+    algorithm: 'HS256',
+    expiresIn: '14d',
+    issuer: 'wesopt',
+  };
+  const result = {
+    refreshtoken: jwt.sign(payload, refreshSecretKey, refreshOption),
   };
   return result;
 };
@@ -48,8 +64,31 @@ const verify = (token) => {
   // 해독 / 인증이 완료되면, 해독된 상태의 JWT를 반환합니다.
   return decoded;
 };
-
+const refreshVerify = (token) => {
+  let decoded;
+  try {
+    decoded = jwt.verify(token, refreshSecretKey);
+  } catch (err) {
+    if (err.message === 'jwt expired') {
+      console.log('expired token');
+      functions.logger.error('expired token');
+      return TOKEN_EXPIRED;
+    } else if (err.message === 'invalid token') {
+      console.log('invalid token');
+      functions.logger.error('invalid token');
+      return TOKEN_INVALID;
+    } else {
+      console.log('invalid token');
+      functions.logger.error('invalid token');
+      return TOKEN_INVALID;
+    }
+  }
+  // 해독 / 인증이 완료되면, 해독된 상태의 JWT를 반환합니다.
+  return decoded;
+};
 module.exports = {
   sign,
+  refresh,
   verify,
+  refreshVerify,
 };
