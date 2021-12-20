@@ -18,7 +18,13 @@
 
 Access Token의 단점은 제 3자에게 탈취되었을 때 보안에 취약하다는 점이다. 이를 막기 위해 유효기간을 짧게 설정하여 발급하면 사용자는 로그인을 자주해줘야하는 단점이 생긴다. 이를 막기위해 Refresh Token을 사용하면 된다. Refresh Token은 Access Token과 같은 JWT로 로그인 시 Access Token과 함께 발급된다. Refresh Token은 Access Token보다 유효기간이 길며 Access Token이 만료되었을 때 Refresh Token이 만료되지 않았다면 Access Token을 재발급한다. 이를 통해 Access Token이 탈취되어도 유효기간이 짧기 때문에 조금 더 보안성을 높일 수 있다.
 
-![image](https://user-images.githubusercontent.com/51692363/146747306-3d048290-defd-4c85-9965-1bdbb26a466f.png)
+
+
+![image](https://user-images.githubusercontent.com/51692363/146750505-a0f43eff-5034-4668-adf3-8bceec02a69f.png)
+
+
+
+
 
 Access Token이 만료되면,
 
